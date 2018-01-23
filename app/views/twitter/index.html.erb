@@ -1,0 +1,54 @@
+<h1>Twitter画像取得</h1>
+<pre>
+	連続で検索するとエラーになるので注意
+</pre>
+
+<%= form_for @twitter, :html => { :class => '', :role => 'form' }, url: root_path do |f| %>
+	<div class="form-group col-md-3 mb-3">
+		<%= f.label :tag, "ハッシュタグ", class: 'control-label' %>
+		<%= f.text_field :tag, name: :tag, class: 'form-control', placeholder: '#hogehoge' %>
+	</div>
+	<div class="form-group col-md-2 mb-3">
+		リツート
+		<div class="radio-inline">
+			<label><%= f.radio_button :rt, 'OFF', { name: :rt, checked: true } %>含まない</label>
+			<label><%= f.radio_button :rt, 'ON' ,name: :rt %>含む</label>
+		</div>
+	</div>
+	<div class="form-group col-md-2 mb-3">
+		<%= f.label :safe, "セーフサーチ（実験的）", class: 'control-label' %>
+		<%= f.select :safe, options_for_select(['ON', 'OFF', 'ERO'], selected: params[:safe]), {}, { name: :safe, class: 'form-control' } %>
+	</div>
+	<div class="form-group col-md-2 mb-3">
+		<%= f.label :media, "画像(動画)のみ（実験的）", class: 'control-label' %>
+		<%= f.select :media, options_for_select(['ON', 'OFF'], selected: params[:media]), {}, { name: :media, class: 'form-control' } %>
+	</div>
+	<div class="form-group col-md-2 mb-3">
+		<%= f.label :limit, "取得数", class: 'control-label' %>
+		<%= f.select :limit, options_for_select([10, 30, 50, 100], selected: params[:limit]), {},{ name: :limit, class: 'form-control' } %>
+	</div>
+	<div class="form-group col-md-2 mb-3">
+		<%= f.label :type, "結果", class: 'control-label' %>
+		<%= f.select :type, options_for_select({全て: 'mixed', 最新: 'recent', 人気: 'popular'}, selected: params[:type]), {},{ name: :type, class: 'form-control' } %>
+	</div>
+	<%= f.submit '取得する', class: 'btn btn-primary' %>
+<% end %>
+
+<br>
+
+<% if @twitter.tweet.present? %>
+<div class="container">
+	<% @twitter.tweet.each do |tweet| %>
+	<div class="row">
+		<div class="card">
+			<% tweet[:media_url].each do |img| %>
+			<p><img src="<%= img %>" class="rounded mx-auto d-block" style="max-height:200px;"/></p>
+			<% end %>
+			<p><img src="<%= tweet[:icon] %>" alt="icon"> <%= tweet[:name] %></p>
+			<p><%= tweet[:text] %></p>
+			<!-- <p>リツート <%= tweet[:rt] %></p> -->
+		</div>
+	</div>
+	<% end %>
+</div>
+<% end %>
