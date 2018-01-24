@@ -15,8 +15,7 @@ class TwitterController < ApplicationController
       tag << " exclude:retweets" if params[:rt] == 'OFF'
 
       @twitter.tweet = []
-      @twitter.client.search("##{tag}", lang: "ja", result_type: params[:type], count: params[:limit], filter: "images").map do |tweet|
-        next if tweet.media.empty?
+      @twitter.client.search("##{tag}", lang: "ja", result_type: params[:type], count: params[:limit]).map do |tweet|
         break if @twitter.tweet.size > params[:limit].to_i
         ret = {
                 icon: tweet.user.profile_image_url,
